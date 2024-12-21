@@ -422,7 +422,15 @@ require('lazy').setup({
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
 
-      vim.keymap.set('n', 'Mk', function()
+      vim.keymap.set('n', '<C-s>', function()
+        vim.cmd ':w'
+      end, { desc = 'Run current file based on its extension' })
+
+      vim.keymap.set('n', '<M-o>', function()
+        vim.cmd ':wq'
+      end, { desc = 'Run current file based on its extension' })
+
+      vim.keymap.set('n', '<A-k>', function()
         local filetype = vim.bo.filetype
         local filename = vim.fn.expand '%'
 
@@ -443,7 +451,10 @@ require('lazy').setup({
           vim.cmd('!bash ' .. filename)
         elseif filetype == 'rust' then
           -- Compile and run Rust file
-          vim.cmd('!rustc ' .. filename .. ' && ./' .. vim.fn.expand '%:r') -- run the compiled file
+          local output_name = vim.fn.expand '%:r' -- Root name without extension
+          local command = 'te rustc ' .. vim.fn.shellescape(filename) .. ' && ./' .. vim.fn.shellescape(output_name)
+
+          vim.cmd(command)
         else
           print('Unsupported file type: ' .. filetype)
         end
