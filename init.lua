@@ -422,6 +422,33 @@ require('lazy').setup({
         })
       end, { desc = '[/] Fuzzily search in current buffer' })
 
+      vim.keymap.set('n', 'Mk', function()
+        local filetype = vim.bo.filetype
+        local filename = vim.fn.expand '%'
+
+        if filetype == 'python' then
+          -- Run Python file
+          vim.cmd('!python3 ' .. filename)
+        elseif filetype == 'javascript' then
+          -- Run JavaScript file (using node.js)
+          vim.cmd('!node ' .. filename)
+        elseif filetype == 'lua' then
+          -- Run Lua file
+          vim.cmd('!lua ' .. filename)
+        elseif filetype == 'go' then
+          -- Run Go file
+          vim.cmd('!go run ' .. filename)
+        elseif filetype == 'sh' then
+          -- Run Shell script
+          vim.cmd('!bash ' .. filename)
+        elseif filetype == 'rust' then
+          -- Compile and run Rust file
+          vim.cmd('!rustc ' .. filename .. ' && ./' .. vim.fn.expand '%:r') -- run the compiled file
+        else
+          print('Unsupported file type: ' .. filetype)
+        end
+      end, { desc = 'Run current file based on its extension' })
+
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<leader>s/', function()
