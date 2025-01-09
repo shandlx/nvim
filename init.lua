@@ -436,19 +436,19 @@ require('lazy').setup({
 
         if filetype == 'python' then
           -- Run Python file
-          vim.cmd('!python3 ' .. filename)
+          vim.cmd('te python3 ' .. filename)
         elseif filetype == 'javascript' then
           -- Run JavaScript file (using node.js)
-          vim.cmd('!node ' .. filename)
+          vim.cmd('te node ' .. filename)
         elseif filetype == 'lua' then
           -- Run Lua file
-          vim.cmd('!lua ' .. filename)
+          vim.cmd('te lua ' .. filename)
         elseif filetype == 'go' then
           -- Run Go file
-          vim.cmd('!go run ' .. filename)
+          vim.cmd('te go run ' .. filename)
         elseif filetype == 'sh' then
           -- Run Shell script
-          vim.cmd('!bash ' .. filename)
+          vim.cmd('te bash ' .. filename)
         elseif filetype == 'rust' then
           -- Compile and run Rust file
           local output_name = vim.fn.expand '%:r' -- Root name without extension
