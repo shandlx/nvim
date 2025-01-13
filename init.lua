@@ -229,6 +229,51 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+  {
+    'lewis6991/gitsigns.nvim',
+    config = function()
+      require('gitsigns').setup {
+        signs = {
+          add = { text = '│' },
+          change = { text = '│' },
+          delete = { text = '_' },
+          topdelete = { text = '‾' },
+          changedelete = { text = '~' },
+        },
+        current_line_blame = true, -- Enable blame for the current line
+        current_line_blame_opts = {
+          virt_text = true,
+          virt_text_pos = 'eol', -- Place blame text at the end of the line
+          delay = 100, -- Delay before showing blame text (in milliseconds)
+          ignore_whitespace = false,
+        },
+        current_line_blame_formatter = '  <author> [<author_time:%Y-%m-%d>] - <summary>',
+        keymaps = {
+          noremap = true,
+          buffer = true,
+          ['n ]c'] = { expr = true, "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'" },
+          ['n [c'] = { expr = true, "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'" },
+          ['n <leader>hs'] = '<cmd>Gitsigns stage_hunk<CR>',
+          ['n <leader>hr'] = '<cmd>Gitsigns reset_hunk<CR>',
+          ['n <leader>hb'] = '<cmd>Gitsigns blame_line<CR>',
+          ['n <leader>hd'] = '<cmd>Gitsigns diffthis<CR>',
+        },
+      }
+    end,
+  },
+
+  -- Vim-Fugitive for Git commands
+  {
+    'tpope/vim-fugitive',
+    config = function()
+      vim.keymap.set('n', '<leader>gs', ':Git<CR>', { desc = 'Git status' })
+      vim.keymap.set('n', '<leader>gc', ':Git commit<CR>', { desc = 'Git commit' })
+      vim.keymap.set('n', '<leader>gp', ':Git push<CR>', { desc = 'Git push' })
+      vim.keymap.set('n', '<leader>gl', ':Git pull<CR>', { desc = 'Git pull' })
+      vim.keymap.set('n', '<leader>gd', ':Gvdiffsplit<CR>', { desc = 'Git diff split' })
+    end,
+  },
+
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
@@ -1017,3 +1062,71 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+--
+--
+--
+-- General remaps
+vim.keymap.set('n', '<leader>w', ':w<CR>', { desc = 'Save file' })
+vim.keymap.set('n', '<leader>q', ':q<CR>', { desc = 'Quit file' })
+vim.keymap.set('n', '<leader>nh', ':nohl<CR>', { desc = 'Clear search highlighting' })
+vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Escape insert mode' })
+
+-- Move lines up and down
+vim.keymap.set('n', '<A-j>', ':m .+1<CR>==', { desc = 'Move line down' })
+vim.keymap.set('n', '<A-k>', ':m .-2<CR>==', { desc = 'Move line up' })
+vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { desc = 'Move selection down' })
+vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv", { desc = 'Move selection up' })
+
+-- Window navigation
+vim.keymap.set('n', '<C-h>', '<C-w>h', { desc = 'Move to left split' })
+vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Move to right split' })
+vim.keymap.set('n', '<C-j>', '<C-w>j', { desc = 'Move to bottom split' })
+vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Move to top split' })
+
+-- Resize windows
+vim.keymap.set('n', '<C-Up>', ':resize -2<CR>', { desc = 'Resize window up' })
+vim.keymap.set('n', '<C-Down>', ':resize +2<CR>', { desc = 'Resize window down' })
+vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>', { desc = 'Resize window left' })
+vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', { desc = 'Resize window right' })
+
+-- Buffer and tab management
+vim.keymap.set('n', '<leader>bd', ':bd<CR>', { desc = 'Close buffer' })
+vim.keymap.set('n', '<Tab>', ':bnext<CR>', { desc = 'Next buffer' })
+vim.keymap.set('n', '<S-Tab>', ':bprevious<CR>', { desc = 'Previous buffer' })
+vim.keymap.set('n', '<leader>tn', ':tabnew<CR>', { desc = 'New tab' })
+vim.keymap.set('n', '<leader>tp', ':tabprev<CR>', { desc = 'Previous tab' })
+vim.keymap.set('n', '<leader>tn', ':tabnext<CR>', { desc = 'Next tab' })
+
+-- Telescope file navigation
+local builtin = require 'telescope.builtin'
+vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find files' })
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Live grep' })
+vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'List buffers' })
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Find help' })
+
+-- File explorer (NvimTree or equivalent)
+vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })
+
+-- Sexplore (horizontal file explorer)
+vim.keymap.set('n', '<leader>se', ':Ex<CR>', { desc = 'Open horizontal split file explorer' })
+vim.keymap.set('n', '<leader>pv', ':Ex<CR>', { desc = 'Open horizontal split file explorer' })
+
+-- Git integration (Fugitive)
+vim.keymap.set('n', '<leader>gs', ':Git<CR>', { desc = 'Git status' })
+vim.keymap.set('n', '<leader>gd', ':Gvdiffsplit<CR>', { desc = 'Git diff' })
+
+-- Visual line shifting
+vim.keymap.set('v', '<', '<gv', { desc = 'Indent left and reselect' })
+vim.keymap.set('v', '>', '>gv', { desc = 'Indent right and reselect' })
+
+-- Quickly open config file
+vim.keymap.set('n', '<leader>v', ':e ~/.config/nvim/init.lua<CR>', { desc = 'Edit Neovim config' })
+
+-- Replace word under cursor
+vim.keymap.set('n', '<leader>rw', [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = 'Replace word under cursor' })
+
+-- Better paste in visual mode
+vim.keymap.set('v', 'p', '"_dP', { desc = 'Paste without overwriting clipboard' })
+
+-- Toggle line numbers
+vim.keymap.set('n', '<leader>n', ':set relativenumber!<CR>', { desc = 'Toggle relative line numbers' })
