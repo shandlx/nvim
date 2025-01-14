@@ -1107,8 +1107,8 @@ vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Live grep' })
 vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'List buffers' })
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Find help' })
 
-vim.keymap.set('n', '<M-l>', ':te lazydocker<CR>', { desc = 'Toggle file explorer' })
-vim.keymap.set('n', '<M-d>', ':te lazygit<CR>', { desc = 'Toggle file explorer' })
+vim.keymap.set('n', '<M-d>', ':te lazydocker<CR>', { desc = 'Toggle file explorer' })
+vim.keymap.set('n', '<M-l>', ':te lazygit<CR>', { desc = 'Toggle file explorer' })
 
 -- File explorer (NvimTree or equivalent)
 vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })
