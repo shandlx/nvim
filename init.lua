@@ -229,6 +229,7 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+  'jose-elias-alvarez/null-ls.nvim',
   {
     'lewis6991/gitsigns.nvim',
     config = function()
@@ -481,7 +482,7 @@ require('lazy').setup({
 
         if filetype == 'python' then
           -- Run Python file
-          vim.cmd('te python3 ' .. filename)
+          vim.cmd('te python3.10 ' .. filename)
         elseif filetype == 'javascript' then
           -- Run JavaScript file (using node.js)
           vim.cmd('te node ' .. filename)
@@ -1100,9 +1101,14 @@ vim.keymap.set('n', '<leader>tn', ':tabnext<CR>', { desc = 'Next tab' })
 -- Telescope file navigation
 local builtin = require 'telescope.builtin'
 vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Find files' })
+vim.keymap.set('n', '<leader>gg', builtin.live_grep, { desc = 'Find files' })
+vim.keymap.set('n', '<leader>fd', builtin.lsp_definitions, { desc = 'Find files' })
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Live grep' })
 vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'List buffers' })
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Find help' })
+
+vim.keymap.set('n', '<M-g>', ':te lazydocker<CR>', { desc = 'Toggle file explorer' })
+vim.keymap.set('n', '<M-d>', ':te lazygit<CR>', { desc = 'Toggle file explorer' })
 
 -- File explorer (NvimTree or equivalent)
 vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = 'Toggle file explorer' })
@@ -1130,3 +1136,23 @@ vim.keymap.set('v', 'p', '"_dP', { desc = 'Paste without overwriting clipboard' 
 
 -- Toggle line numbers
 vim.keymap.set('n', '<leader>n', ':set relativenumber!<CR>', { desc = 'Toggle relative line numbers' })
+
+local null_ls = require 'null-ls'
+null_ls.setup {
+  sources = {
+    null_ls.builtins.formatting.black,
+    null_ls.builtins.diagnostics.flake8,
+  },
+}
+
+-- vim.api.nvim_create_autocmd('BufWritePre', {
+--   pattern = '*.py', -- Trigger only for Python files
+--   callback = function()
+--     vim.lsp.buf.format { async = false } -- Synchronously format before saving
+--   end,
+-- })
+
+vim.api.nvim_create_autocmd('BufWritePre', {
+  pattern = '*.py',
+  command = 'silent !/usr/bin/black %',
+})
